@@ -15,10 +15,152 @@
 
   <!--font-awesome link for icons-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody,
+tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure,
+figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
 
-  <!-- Default style-sheet is for 'media' type screen (color computer display).  -->
-  <link rel="stylesheet" media="screen" href="assets/css/style.css" >
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
 
+label,
+input[type='button'],
+input[type='submit'],
+button {
+  cursor: pointer;
+}
+
+strong {
+  font-weight: bold;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+em { font-style: italic; }
+
+img {
+  width: 100%;
+  border: 0;
+  vertical-align: middle;
+}
+
+sub,
+sup {
+  vertical-align: baseline;
+  position: relative;
+  font-size: 55%;
+  line-height: 0;
+}
+
+sup { top: -.7em; }
+sub { bottom: -.25em; }
+
+.cf:before,
+.cf:after {
+  display: table;
+  content: " ";
+}
+
+.cf:after { clear: both; }
+.cf { *zoom: 1; }
+
+body {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+a { 
+  display: inline-block;
+  text-decoration: none; 
+}
+
+li {
+  display: inline-block;
+  list-style-type: none;
+}
+
+.wrapper {
+  max-width: 1360px;
+  width: 86%; 
+  margin: 0 auto;
+}
+
+main, .input {
+  padding: 20px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.input input {
+  width: 100%;
+  padding: 10px 20px;
+  border: 1px solid #000;
+  outline: none;
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.btn {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #000;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #fff;
+  background-color: #358acf;
+  box-shadow: 5px 5px 10px rgba(0,0,0,.5);
+  transition: .3s;
+}
+
+.btn:hover { 
+  color: #358acf;
+  background-color: #fff;
+  box-shadow: none;
+ }
+
+.weater-content {
+  width: 60%;
+  padding: 30px;
+  border-radius: 10px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #56e5f8;
+  box-shadow: 5px 5px 10px rgba(0,0,0,.5);
+}
+
+.weater-content span {
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+
+figure {
+  width: 100px;
+  height: 100px;
+}
+ 
+  </style>
 </head>
 
 <body>
@@ -43,6 +185,44 @@
   </div>
   <!--container end-->
 
-<script src="assets/js/script.js"></script>
+<script>
+var btn = document.querySelector('.btn');
+
+btn.addEventListener('click', function () {
+    var inputval = document.querySelector('.userinput')
+    var temp = document.querySelector('.temp');
+    var cityname = document.querySelector('.city');
+    var weatherImg = document.querySelector('.weatherImg');
+    var convertTemp;
+
+    var xhr = new XMLHttpRequest();
+    var city = inputval.value;
+    xhr.open('get', `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=1509440b46d0d8c62160d1d5dbe96a66`, true);
+
+    xhr.onreadystatechange = weatherApp;
+
+    function weatherApp() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var responseWeather = JSON.parse(xhr.responseText);
+            console.log(responseWeather);
+            
+            convertTemp = Math.floor(responseWeather.main.temp-273.15)
+            temp.innerHTML = convertTemp + '&#8451; , '+responseWeather.weather[0].main;
+            cityname.innerHTML = responseWeather.name;
+            var iconCode = responseWeather.weather[0].icon;
+           
+            weatherImg.src = `http://openweathermap.org/img/wn/${iconCode}@2x.png`
+        }
+        else {
+            console.log("Data not load");
+        }
+    }
+
+    xhr.send();
+
+    inputval.value = " ";
+});
+
+</script>
 </body>
 </html>
